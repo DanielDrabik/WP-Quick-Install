@@ -426,42 +426,62 @@ if ( isset( $_GET['action'] ) ) {
 				/*	We install the new theme
 				/*--------------------------*/
 
-				// We verify if theme.zip exists
-				if ( file_exists( 'theme.zip' ) ) {
+				// Look for zip file without knowing its name
+				$list = glob('*.zip');
+				
+				// If zip file found
+				if ( !empty( $list ) ) {
+					if ( file_exists( $list[0] ) ) {
 
-					$zip = new ZipArchive;
+						$zip = new ZipArchive;
 
-					// We verify we can use it
-					if ( $zip->open( 'theme.zip' ) === true ) {
+						// We verify we can use it
+						if ( $zip->open( $list[0] ) === true ) {
 
-						// We retrieve the name of the folder
-						$stat = $zip->statIndex( 0 );
-						$theme_name = str_replace('/', '' , $stat['name']);
+							// We retrieve the name of the folder from zip file's name							
+							$theme_name = str_replace('.zip', '' , $list[0]);
 
-						// We unzip the archive in the themes folder
-						$zip->extractTo( $directory . 'wp-content/themes/' );
-						$zip->close();
+							// Let's save theme directory path for future use
 
-						// Let's activate the theme
-						// Note : The theme is automatically activated if the user asked to remove the default theme
-						if ( $_POST['activate_theme'] == 1 || $_POST['delete_default_themes'] == 1 ) {
-							switch_theme( $theme_name, $theme_name );
+							$theme_directory = $directory . 'wp-content/themes/' . $theme_name;
+
+							// We unzip the archive in the themes folder
+							$zip->extractTo( $theme_directory . '/' );
+							$zip->close();							
+
+							// Import files to our theme's directory
+							if ( file_exists( 'import' ) && is_dir( 'import' ) )						
+								recurse_copy( 'import', $theme_directory );						
+
+							// Add styles.css to theme's directory
+							$style_header = '/*
+											  Theme Name: '. $_POST['weblog_title'] .'
+											 */';
+
+							file_put_contents( $theme_directory . '/style.css', $style_header );
+
+							// Let's activate the theme
+							// Note : The theme is automatically activated if the user asked to remove the default theme
+							if ( $_POST['activate_theme'] == 1 || $_POST['delete_default_themes'] == 1 ) {
+								switch_theme( $theme_name, $theme_name );
+							}
+
+							// Let's remove the Tweenty family
+							if ( $_POST['delete_default_themes'] == 1 ) {
+								delete_theme( 'twentyseventeen' );
+								delete_theme( 'twentysixteen' );
+								delete_theme( 'twentyfifteen' );
+								delete_theme( 'twentyfourteen' );
+								delete_theme( 'twentythirteen' );
+								delete_theme( 'twentytwelve' );
+								delete_theme( 'twentyeleven' );
+								delete_theme( 'twentyten' );
+							}
+
+							// We delete the _MACOSX folder (bug with a Mac)
+							delete_theme( '__MACOSX' );
+
 						}
-
-						// Let's remove the Tweenty family
-						if ( $_POST['delete_default_themes'] == 1 ) {
-							delete_theme( 'twentysixteen' );
-							delete_theme( 'twentyfifteen' );
-							delete_theme( 'twentyfourteen' );
-							delete_theme( 'twentythirteen' );
-							delete_theme( 'twentytwelve' );
-							delete_theme( 'twentyeleven' );
-							delete_theme( 'twentyten' );
-						}
-
-						// We delete the _MACOSX folder (bug with a Mac)
-						delete_theme( '__MACOSX' );
-
 					}
 				}
 
@@ -726,14 +746,14 @@ else { ?>
 							<label for="activate_theme"><?php echo _('Automatic Activation');?></label>
 						</th>
 						<td colspan="2">
-							<label><input type="checkbox" id="activate_theme" name="activate_theme" value="1" /> <?php echo _('Activate the theme after installing WordPress.');?></label>
+							<label><input type="checkbox" id="activate_theme" name="activate_theme" value="1" checked/> <?php echo _('Activate the theme after installing WordPress.');?></label>
 						</td>
 					</tr>
 					<tr>
 						<th scope="row">
 							<label for="delete_default_themes"><?php echo _('Default Themes');?></label>
 						</th>
-						<td colspan="2"><label><input type="checkbox" id="delete_default_themes" name="delete_default_themes" value="1" /> <?php echo _('Delete the default themes (Twenty Family).');?></label></td>
+						<td colspan="2"><label><input type="checkbox" id="delete_default_themes" name="delete_default_themes" value="1" checked/> <?php echo _('Delete the default themes (Twenty Family).');?></label></td>
 					</tr>
 				</table>
 
@@ -746,7 +766,7 @@ else { ?>
 							<p><?php echo _('The extension slug is available in the url (Ex: http://wordpress.org/extend/plugins/<strong>wordpress-seo</strong>)');?></p>
 						</th>
 						<td>
-							<input name="plugins" type="text" id="plugins" size="50" value="wp-website-monitoring; rocket-lazy-load; imagify" />
+							<input name="plugins" type="text" id="plugins" size="50" value="cmb2;" />
 							<p><?php echo _('Make sure that the extensions slugs are separated by a semicolon (;).');?></p>
 						</td>
 					</tr>
@@ -761,7 +781,7 @@ else { ?>
 						<th scope="row">
 							<label for="plugins"><?php echo _('Automatic activation');?></label>
 						</th>
-						<td><label><input type="checkbox" name="activate_plugins" id="activate_plugins" value="1" /> <?php echo _('Activate the extensions after WordPress installation.');?></label></td>
+						<td><label><input type="checkbox" name="activate_plugins" id="activate_plugins" value="1" checked/> <?php echo _('Activate the extensions after WordPress installation.');?></label></td>
 					</tr>
 				</table>
 
