@@ -1,7 +1,7 @@
 <?php
-
   	// For example proposes of importing files to the new theme's directory
-	
+
+	// Shortening functions to get CMB2's output
 	function get_the_field($field_id, $id = null)
 	{
 		if ( empty( $id ) && isset( $GLOBALS['post'] ) ) {
