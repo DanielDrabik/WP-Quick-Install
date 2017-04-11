@@ -1,7 +1,7 @@
 <?php
 
-  // For example proposes of importing files to the new theme's directory
-
+  	// For example proposes of importing files to the new theme's directory
+	
 	function get_the_field($field_id, $id = null)
 	{
 		if ( empty( $id ) && isset( $GLOBALS['post'] ) ) {
@@ -21,3 +21,13 @@
 	{
 		echo get_the_field($field_id, $id);
 	}
+
+	// Added more things that I usually need during theme developing
+	require_once('wp_bootstrap_navwalker.php');
+
+	register_nav_menus( array(
+		'primary' => __( 'Primary Menu', 'headmenu' ),
+	) );
+
+	add_theme_support( 'post-thumbnails');
+	add_theme_support( 'title-tag' );
