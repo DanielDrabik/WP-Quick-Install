@@ -461,6 +461,11 @@ if ( isset( $_GET['action'] ) ) {
 							
 							// Get index from directory
 							$index = $theme_directory . '/index.php';
+							
+							// Filetype depends on Front-End Dev's tastes							
+							if( !file_exists( $index ) )
+								$index = $theme_directory . '/index.html';
+
 							$index_content = file_get_contents( $index, true);
 
 							// Fix paths to css, img and js files
