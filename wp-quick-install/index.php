@@ -457,8 +457,24 @@ if ( isset( $_GET['action'] ) ) {
 							$style_header = '/*
 											  Theme Name: '. $_POST['weblog_title'] .'
 											 */';
-
 							file_put_contents( $theme_directory . '/style.css', $style_header );
+							
+							// Get index from directory
+							$index = $theme_directory . '/index.php';
+							$index_content = file_get_contents( $index, true);
+
+							// Fix paths to css, img and js files
+							$index_content = preg_replace(';css\/;', '<?php echo bloginfo(\'template_url\'); ?>/css/', $index_content);
+							$index_content = preg_replace(';img\/;', '<?php echo bloginfo(\'template_url\'); ?>/img/', $index_content);
+							$index_content = preg_replace(';js\/;', '<?php echo bloginfo(\'template_url\'); ?>/js/', $index_content);
+
+							file_put_contents($index, $index_content);
+
+							// Let's activate the theme
+							// Note : The theme is automatically activated if the user asked to remove the default theme
+							if ( $_POST['activate_theme'] == 1 || $_POST['delete_default_themes'] == 1 ) {
+								switch_theme( $theme_name, $theme_name );
+							}
 
 							// Let's activate the theme
 							// Note : The theme is automatically activated if the user asked to remove the default theme
