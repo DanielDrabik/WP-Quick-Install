@@ -1,4 +1,4 @@
-WP Quick Install 1.4.2
+WP Quick Install 1.4.2.a
 ================
 
 WP Quick Install is the easiest way to install WordPress.
@@ -7,8 +7,26 @@ A lightweight script which automatically downloads and install WordPress, plugin
 
 Simply download the .zip archive et go to *wp-quick-install/index.php*
 
+Fork
+================
+
+Individual fork to speed up 'HTML to WP' developing.
+
+
 Changelog
 ================
+
+
+1.4.2.a
+-----------
+* Deleting TwentySeventeen theme.
+* Zip file can have any name.
+* Theme folder will by called by the zip file's name.
+* Auto adding style.css with "Theme Name" same as website title.
+* Added importing files to new theme directory (in case you want to add prepared function.php, screenshot.png etc.) from "import" directory.
+* Changed few checkboxes that I was clicking on every installation to be checked out of stock.
+* Deleted unused (by me) plugins and replaced with CMB2.
+* Preg_replace css/, img/ and js/ with <?php echo bloginfo('template_url'); ?>/css/ etc.
 
 1.4.2
 -----------
