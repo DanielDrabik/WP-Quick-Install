@@ -21,7 +21,7 @@ Changelog
 -----------
 * Deleting TwentySeventeen theme.
 * Zip file can have any name.
-* Theme folder will by called by the zip file's name.
+* Theme folder will be called by the zip file's name.
 * Auto adding style.css with "Theme Name" same as website title.
 * Added importing files to new theme directory (in case you want to add prepared function.php, screenshot.png etc.) from "import" directory.
 * Changed few checkboxes that I was clicking on every installation to be checked out of stock.
