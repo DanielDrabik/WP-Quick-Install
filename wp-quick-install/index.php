@@ -469,10 +469,14 @@ if ( isset( $_GET['action'] ) ) {
 							$index_content = file_get_contents( $index, true);
 
 							// Fix paths to css, img and js files
-							$index_content = preg_replace(';css\/;', '<?php echo bloginfo(\'template_url\'); ?>/css/', $index_content);
-							$index_content = preg_replace(';img\/;', '<?php echo bloginfo(\'template_url\'); ?>/img/', $index_content);
-							$index_content = preg_replace(';js\/;', '<?php echo bloginfo(\'template_url\'); ?>/js/', $index_content);
-
+							$index_content = str_replace( 'css/', '<?php echo bloginfo(\'template_url\'); ?>/css/', $index_content);
+							$index_content = str_replace( 'img/', '<?php echo bloginfo(\'template_url\'); ?>/img/', $index_content);
+							$index_content = str_replace( 'js/', '<?php echo bloginfo(\'template_url\'); ?>/js/', $index_content);
+							
+							// Add wp_head and wp_footer functions
+							$index_content = str_replace( '</head>', '<?php wp_head(); ?></head>', $index_content);
+							$index_content = str_replace( '</body>', '<?php wp_footer(); ?></body>', $index_content);
+							
 							file_put_contents($index, $index_content);
 
 							// Let's activate the theme
