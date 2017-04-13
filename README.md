@@ -27,6 +27,7 @@ Changelog
 * Changed few checkboxes that I was clicking on every installation to be checked out of stock.
 * Deleted unused (by me) plugins and replaced with CMB2.
 * Preg_replace css/, img/ and js/ with <?php echo bloginfo('template_url'); ?>/css/ etc.
+* Adds wp_head() and wp_footer() to the index file.
 
 1.4.2
 -----------
