@@ -791,7 +791,7 @@ else { ?>
 							<p><?php echo _('The extension slug is available in the url (Ex: http://wordpress.org/extend/plugins/<strong>wordpress-seo</strong>)');?></p>
 						</th>
 						<td>
-							<input name="plugins" type="text" id="plugins" size="50" value="cmb2;" />
+							<input name="plugins" type="text" id="plugins" size="50" value="cmb2;titan-framework;" />
 							<p><?php echo _('Make sure that the extensions slugs are separated by a semicolon (;).');?></p>
 						</td>
 					</tr>
