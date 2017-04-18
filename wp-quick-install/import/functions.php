@@ -31,3 +31,5 @@
 
 	add_theme_support( 'post-thumbnails');
 	add_theme_support( 'title-tag' );
+
+	include 'tf/settings.php';
