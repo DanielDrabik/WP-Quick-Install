@@ -22,6 +22,16 @@
 		echo get_the_field($field_id, $id);
 	}
 
+	function the_option($option_key, $option_id) {
+
+		echo cmb2_get_option($option_key, $option_id);
+	}
+
+	function get_the_option($option_key, $option_id) {
+
+		return cmb2_get_option($option_key, $option_id);
+	}
+
 	// Added more things that I usually need during theme developing
 	require_once('wp_bootstrap_navwalker.php');
 
@@ -32,4 +42,4 @@
 	add_theme_support( 'post-thumbnails');
 	add_theme_support( 'title-tag' );
 
-	include 'tf/settings.php';
+	include 'cmb/settings.php';
