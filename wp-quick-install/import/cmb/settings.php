@@ -1,4 +1,4 @@
-    <?php
+<?php
 
 // add action to hook option page creation to
 add_action( 'cmb2_admin_init', 'gloo_settings' );
