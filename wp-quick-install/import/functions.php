@@ -2,7 +2,7 @@
 /**
  * Default functions.php for Wordpress Theme
  * @author 	Daniel Drabik (d.drabik@gloo.pl)
- * @version 0.6
+ * @version 0.7
  *
  * @todo Multilingual option - fields
  * 
