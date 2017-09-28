@@ -2,7 +2,7 @@
 /**
  * Default functions.php for Wordpress Theme
  * @author 	Daniel Drabik (d.drabik@gloo.pl)
- * @version 0.5
+ * @version 0.6
  *
  * @todo Multilingual option - fields
  * 
@@ -17,7 +17,36 @@
  * 		- Added languages support
  * 		- Added bittersweet_pagination @link https://github.com/talentedaamer/Bitter-Sweet/blob/master/functions.php#L172 	\
  * 0.5	- Added optional 'the_content' filter
+ * 0.6	- Added is_field, is_option, is_term_field functions in order to check if the value is not empty
+ *		- Removed WP Logo from toolbar
+ *		- Added Enqueue Styles and Enqueue Script
+ *		- Added functions to apply 'the_content' filters
+ *		- Added short function to echo tempalte url
+ *		- Remove Spans from Contact Form 7
+ * 0.7 	- Moved wp_bootstrap_navwalker.php to inc directory
+ * 		- Added cmbField class which provides easy field creation.
  */
+
+	/**
+	 * Add cmbField
+	 */
+	include 'inc/cmb_field.php';
+
+	/**
+	 * Enqueue Script & Styles
+	 */
+	function add_theme_scripts() {
+
+	 	wp_enqueue_style( 'bootstrap', get_template_directory_uri() . '/css/bootstrap.css', false, 1);
+	 	wp_enqueue_style( 'font-awesome', get_template_directory_uri() . '/css/font-awesome.css', false, 1);
+	 	wp_enqueue_style( 'owl-carousel', get_template_directory_uri() . '/css/owl.carousel.css', false, 1);
+	 	wp_enqueue_style( 'main', get_template_directory_uri() . '/css/main.css', false, 1);
+	 
+		wp_enqueue_script( 'bootstrap', get_template_directory_uri() . '/js/bootstrap.js', array (), false, true);
+		wp_enqueue_script( 'owl-carousel', get_template_directory_uri() . '/js/owl.carousel.js', array (), false, true);		
+	}
+
+	add_action( 'wp_enqueue_scripts', 'add_theme_scripts' );
 
 	/**
 	 * Include custom fields templates
@@ -25,7 +54,6 @@
 
 	include 'cmb/settings.php';
 	include 'cmb/front-page.php';
-
 
 	/**
 	 * Returns post/page custom field value
@@ -132,10 +160,32 @@
 			echo $term_item[0];
 	}
 
+
+	function is_field($field_id, $post_id = null) {
+		return !empty(get_the_field($field_id, $post_id));
+	}
+
+	function is_option($option_key, $option_id) {
+		return !empty(get_the_option($option_key, $option_id));
+	}
+
+	function is_term_field($term_id, $key = '', $single = false) {
+		$term_item = get_term_meta($term_id, $key, $single); 
+		return !empty($term_item[0]);
+	}
+
+	function get_content_field($string) {
+		return apply_filters( 'the_content', $string );
+	}
+
+	function content_field($string) {
+		echo get_content_field($string);
+	}
+
 	/**
 	 * Initialize menu
 	 */
-	require_once('wp_bootstrap_navwalker.php');
+	require_once('inc/wp_bootstrap_navwalker.php');
 
 	register_nav_menus( array(
 		'primary' => 'Menu Główne',
@@ -146,7 +196,6 @@
 	 */
 	add_theme_support( 'post-thumbnails');
 	add_theme_support( 'title-tag' );
-
 
 	/**
 	 * Add support for languages
@@ -159,13 +208,20 @@
 	remove_action('welcome_panel', 'wp_welcome_panel');
 
 	/**
-	 * If more than one page exists, return TRUE.
+	 * Remove the Wordpress Logo from the Toolbar
 	 */
-	function show_posts_nav() {
-	    global $wp_query;
-	    return ($wp_query->max_num_pages > 1);
+	add_action( 'admin_bar_menu', 'remove_wp_logo', 999 );
+
+	function remove_wp_logo( $wp_admin_bar ) {
+		$wp_admin_bar->remove_node( 'wp-logo' );
 	}
 
+	/**
+	 *	Echo template url
+	 */
+	function template_url() {
+		echo get_template_directory_uri();
+	}	
 
 	/**
 	 * Easy pagination implementation
@@ -218,15 +274,13 @@
 		return "https://twitter.com/home?status=" . $link; 
 	}
 
-	function gplus_share_url($link) {
-		if (strpos($link, 'https') !== false)
-		    $link = substr($link, 8);
-		else
-			$link = substr($link, 7);
+	/**
+	 *	Remove spans from Contact Form 7
+	 */
+	add_filter('wpcf7_form_elements', function($content) {
+	    $content = preg_replace('/<(span).*?class="\s*(?:.*\s)?wpcf7-form-control-wrap(?:\s[^"]+)?\s*"[^\>]*>(.*)<\/\1>/i', '\2', $content);
 
-		return "https://plus.google.com/share?url=" . $link;
-	}
-
+	    return $content;
+	});
 
 	add_image_size( '300', '300', '300' );
-	add_image_size( '76', '76', '76' );
