@@ -28,9 +28,10 @@
  */
 
 	/**
-	 * Add cmbField
+	 * Add cmbField & cmbOption classes
 	 */
 	include 'inc/cmb_field.php';
+	include 'inc/cmb_option.php';
 
 	/**
 	 * Enqueue Script & Styles
