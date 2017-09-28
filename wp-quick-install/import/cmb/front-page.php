@@ -2,13 +2,10 @@
 
 add_action( 'load-post.php', 'gloo_front_page_hide' );
 
-function gloo_front_page_hide()
-{
-    // Change the ID
-    if( '8' == $_GET['post'] && 'edit' == $_GET['action'] )
-    {
+function gloo_front_page_hide() {
+    
+    if( get_option('page_on_front') == $_GET['post'] && 'edit' == $_GET['action'] ) {
         remove_post_type_support( 'page', 'editor' );
-        remove_post_type_support( 'page', 'thumbnail' );
         remove_post_type_support( 'page', 'page-attributes' );
         remove_post_type_support( 'page', 'revisions' );
         remove_post_type_support( 'page', 'author' );
@@ -16,51 +13,38 @@ function gloo_front_page_hide()
     }
 }
 
-
 add_action('cmb2_admin_init', 'gloo_front_page');
 
-function gloo_front_page()
-{
-    section_1_();
+function gloo_front_page() {
+
+    front_page_();
 }
 
-function section_1_() {
+function front_page_() {
 
     $prefix = __FUNCTION__;
+    $type = array('page');
+    $show_on = array('id' => array(get_option('page_on_front'),));
 
-    $cmb = new_cmb2_box(array(
-        'id' => $prefix . 'metabox',
-        'title' => esc_html__('Sekcja 1', 'cmb2'),
-        'object_types' => array('page',),
-        'show_on' => array('id' => array(8,)),
-        'closed' => false, // true to keep the metabox closed by default
-    ));
+    $cmb_helper = new cmbField($prefix, 'Front Page', $type, $show_on);
 
-    $cmb->add_field( array(
-        'name' => 'URL',
-        'id' => 'url',
-        'type' => 'textarea_code',
-    ));
-
-    $group_field_id = $cmb->add_field(array(
-        'id' => $prefix . 'group',
-        'type' => 'group',
-        // 'repeatable'  => false, // use false if you want non-repeatable group
-        'options' => array(
-            'group_title' => __('Element {#}', 'cmb2'), // since version 1.1.4, {#} gets replaced by row number
-            'add_button' => __('Dodaj Kolejny Element', 'cmb2'),
-            'remove_button' => __('Usuń Element', 'cmb2'),
-            'sortable' => true, // beta
-            'closed' => true, // true to have the groups closed by default
-        ),
-    ));
-
-    // Id's for group's fields only need to be unique for the group. Prefix is not needed.
-    $cmb->add_group_field($group_field_id, array(
-        'name' => 'Logo',
-        'id' => 'image',
-        'type' => 'file',
-    ));
-
+    $cmb_helper->addTab('Section 1');
+    $cmb_helper->addField('title_1', 'Title', 'text');
+    /*  Metaterm id will be front_page_1_title_1
+        front_page_ is a $prefix based on function name
+        1_ is tab number (incrementing after adding each tab with AddTab() method
+        title_1 by the field added id
+    */    
     
+    $cmb_helper->addTab('Section 2');
+    $cmb_helper->addField('title_1', 'Title', 'text');
+    $cmb_helper->addField('text_1', 'Main Text', 'wysiwyg');
+    $cmb_helper->addField('group_1', 'Photos', 'group');
+    $cmb_helper->addField('image', 'Photo', 'file', 'group_1'); // 4th Parameter is group id
+    $cmb_helper->addField('text', 'Text above photo', 'wysiwyg', 'group_1');
+    $cmb_helper->addField('text_2', 'Second Text', 'wysiwyg');
+
+    $cmb = new_cmb2_box($cmb_helper->generateCMB());
+    $cmb->add_field($cmb_helper->generateTabs());  
+
 }
