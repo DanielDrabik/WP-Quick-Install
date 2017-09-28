@@ -61,7 +61,7 @@ class cmbField {
 
 			$this->currentField['fields'][] =  array(
 			        'name' => __( $name, 'cmb2' ),
-			        'id'   => $this->prefix. $this->currentTabId .'_'. $id,
+			        'id'   => $id,
 			        'type' => $type,
 			    );			
 		}
@@ -73,7 +73,7 @@ class cmbField {
 			
 			$this->currentField =  array(
 		        'name' => __( $name, 'cmb2' ),
-		        $this->prefix. $this->currentTabId .'_'. $id,
+		        'id'   => $this->prefix. $this->currentTabId .'_'. $id,
 		        'type' => $type,
 		    );
 			
